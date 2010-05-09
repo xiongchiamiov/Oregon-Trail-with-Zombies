@@ -61,11 +61,33 @@ class Game(object):
 			print "Game Over"
 	
 	def cli(self):
-		for person in self.party:
-			print person
-		print " --> ".join([str(l) for l in self.path])
+		#for person in self.party:
+		#	print person
+		#print " --> ".join([str(l) for l in self.path])
 		
-		raise Game.GameEnd()
+		commands = {}
+		
+		def _(args=[]):
+			''' Displays more information about a command, or lists all commands. '''
+			try:
+				print commands[args[0]].__doc__
+			except (IndexError, KeyError):
+				print 'Available commands: ' + ' '.join(sorted(commands.keys()))
+		commands['help'] = _
+		
+		def _(args=[]):
+			''' Quits the game. '''
+			raise Game.GameEnd()
+		commands['quit'] = _
+		
+		command = raw_input('> ').strip().lower().split(' ')
+		
+		try:
+			commands[command[0]](command[1:])
+		except IndexError:
+			commands[command[0]]
+		except KeyError:
+			commands['help']
 
 if __name__ == '__main__':
 	GameSetup().run().run()
