@@ -21,3 +21,6 @@ class City(Location):
 	
 	def __str__(self):
 		return self.name
+	
+	def greeting(self):
+		return "Mm, %s seems to have stores full of good stuff." % self.name

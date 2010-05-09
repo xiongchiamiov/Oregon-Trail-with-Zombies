@@ -26,3 +26,6 @@ class River(Location):
 	
 	def __str__(self):
 		return self.name
+	
+	def greeting(self):
+		return "A moving mass of water!  It's %s!" % self.name

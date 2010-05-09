@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from collections import deque
 from random import randint
 
 import city
@@ -20,7 +21,7 @@ class GameSetup(object):
 			while(True): self.render()
 		except GameSetup.GameStartException, e:
 			if self.game.path is None:
-				self.game.path = [city.random()]
+				self.game.path = deque([city.random()])
 				self.game.path.extend([random_location() for i in range(0, randint(5, 10))])
 				self.game.path.append(city.random())
 			print e
@@ -44,7 +45,11 @@ class GameSetup(object):
 
 class Game(object):
 	class GameEnd(Exception):
-		pass
+		def __init__(self, message="Game Over"):
+			self.message = message
+		
+		def __str__(self):
+			return self.message
 	
 	def __init__(self, party=None, inventory=None, money=0, path=None, date=None, render=None):
 		self.party = party
@@ -58,9 +63,12 @@ class Game(object):
 		try:
 			while(True): self.render()
 		except Game.GameEnd, e:
-			print "Game Over"
+			print e
 	
 	def cli(self):
+		location = self.path[0]
+		print "# " + location.greeting()
+		
 		#for person in self.party:
 		#	print person
 		#print " --> ".join([str(l) for l in self.path])
@@ -79,6 +87,13 @@ class Game(object):
 			''' Quits the game. '''
 			raise Game.GameEnd()
 		commands['quit'] = _
+		
+		def _(args=[]):
+			''' Move onward and upward. '''
+			self.path.popleft()
+			if not self.path:
+				raise Game.GameEnd("Victory!")
+		commands['move'] = _
 		
 		command = raw_input('> ').strip().lower().split(' ')
 		

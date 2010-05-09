@@ -13,7 +13,8 @@ def random():
 		return Hills()
 
 class Field(Location):
-	pass
+	def greeting(self):
+		return "You've found a plain ol' %s." % self.__str__()
 
 class Desert(Field):
 	def __str__(self):
