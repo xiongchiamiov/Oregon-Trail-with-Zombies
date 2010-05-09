@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+from random import randint
+
+import city
+from location import random_location
 from person import Person
 
 class GameSetup(object):
@@ -15,6 +19,10 @@ class GameSetup(object):
 		try:
 			while(True): self.render()
 		except GameSetup.GameStartException, e:
+			if self.game.path is None:
+				self.game.path = [city.random()]
+				self.game.path.extend([random_location() for i in range(0, randint(5, 10))])
+				self.game.path.append(city.random())
 			print e
 		
 		return self.game
@@ -55,6 +63,7 @@ class Game(object):
 	def cli(self):
 		for person in self.party:
 			print person
+		print " --> ".join([str(l) for l in self.path])
 		
 		raise Game.GameEnd()
 
